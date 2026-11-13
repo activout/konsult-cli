@@ -64,17 +64,17 @@ func newRoot() *cobra.Command {
 	g = globalOpts{}
 	env := os.Getenv("KONSULT_ENV")
 	if env == "" {
-		env = "sandbox"
+		env = "production"
 	}
 	root := &cobra.Command{
 		Use:           "konsult",
 		Short:         unofficial,
-		Long:          unofficial + "\n\n`market` = marketplace assignments (needs Premium Sales, export quota applies).\n`assignments` = your own organisation's assignments.\nDefault environment is sandbox; production needs --env production.",
+		Long:          unofficial + "\n\n`market` = marketplace assignments (needs Premium Sales, export quota applies).\n`assignments` = your own organisation's assignments.\nDefault environment is production; use --env sandbox for Brainville's test environment.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
 	f := root.PersistentFlags()
-	f.StringVar(&g.env, "env", env, "environment: sandbox (default) or production [KONSULT_ENV]")
+	f.StringVar(&g.env, "env", env, "environment: production (default) or sandbox (test) [KONSULT_ENV]")
 	f.StringVar(&g.baseURL, "base-url", "", "developer override of the API base URL (https only)")
 	f.DurationVar(&g.timeout, "timeout", 30*time.Second, "request timeout")
 	f.BoolVar(&g.debug, "debug", false, "log method, path and status to stderr (never secrets or bodies)")

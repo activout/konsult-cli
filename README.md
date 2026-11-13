@@ -12,14 +12,14 @@ Download the archive for your platform from GitHub Releases, check it against `c
 Prerequisite: Brainville API access (user key + sender key). Market needs Premium Sales, applications need Premium Buyer or the Applications API licence.
 
 ```sh
-konsult auth login --env sandbox          # prompts without echo; stores the keys in the OS keychain
+konsult auth login                        # prompts without echo; stores the keys in the OS keychain
 konsult auth status --verify              # never prints the keys
-konsult auth logout --env sandbox
+konsult auth logout
 ```
 - Storage: macOS Keychain, Windows Credential Manager, Linux Secret Service. Keys are never accepted as arguments.
 - Piped: `printf '%s\n%s\n' "$USER_KEY" "$SENDER_KEY" | konsult auth login` (user key first).
 - Headless/CI: set `KONSULT_USER_KEY` and `KONSULT_SENDER_KEY`; they take precedence over the keychain.
-- Precedence: flag > environment variable > keychain > default. Default environment is **sandbox**; production needs `--env production` (or `KONSULT_ENV`).
+- Precedence: flag > environment variable > keychain > default. Default environment is **production**. For Brainville's test environment use `--env sandbox` (or `KONSULT_ENV=sandbox`); keys are stored per environment.
 
 ## Use
 ```sh
