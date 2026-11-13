@@ -43,7 +43,7 @@ Exit codes: 0 ok, 1 general, 2 usage, 3 auth/licence, 4 not found, 5 invalid inp
 Copy or symlink `skills/konsult` into your agent's skills directory (for Claude Code: `~/.claude/skills/konsult`). It contains no secrets.
 
 ## Limits and status
-See `docs/api-coverage.md`, `docs/sandbox-findings.md`, `docs/open-questions.md` and `openapi/unofficial-v2.yaml` (community-authored, evidence-tagged). Not yet verified: market, application, close/share/boost and file operations (licence or side effects). Not covered: webhooks, v1, XML. The `macOS` keychain backend runs `/usr/bin/security`.
+See `docs/api-coverage.md`, `docs/sandbox-findings.md`, `docs/open-questions.md` and `openapi/unofficial-v2.yaml` (community-authored, evidence-tagged). Sandbox-verified: consultants, assignments, files, market search/get, unpublish/close/delete/share. Not verified: applications (licence), `boost` on (404 in the sandbox), and whether emails are sent. Not covered: webhooks, v1, XML. The `macOS` keychain backend runs `/usr/bin/security`.
 
 Troubleshooting: HTTP 401 on `applications`/`market` usually means a missing licence rather than a wrong key. `--debug` logs method, path and status only.
 
