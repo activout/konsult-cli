@@ -15,4 +15,4 @@ Resolved items are in `sandbox-findings.md` (P0-04 id placement, P0-08 downloads
 | P2-01 | v2 webhooks XML or JSON. | Out of scope for v1. |
 | P2-04 | Countries/industries XML caching terms. | Reachable; the CLI does not cache. |
 | P2-05 | Company profile / me endpoint. | None in the v2 docs; the company page cannot be edited through the API. |
-| P2-06 | Third-party client terms. | MIT confirmed by the owner; review Brainville terms before the public release. |
+| P2-06 | Third-party client terms. | Reviewed: see `terms-review.md`. No separate API terms found; ToU 5(h) allows automated tools/AI agents only through authorised APIs. Whether an unofficial client needs extra approval is not stated (ask Brainville). |
