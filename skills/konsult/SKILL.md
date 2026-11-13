@@ -26,6 +26,7 @@ If credentials are missing, tell the user to run `konsult auth login` themselves
 - `konsult assignments|consultants|applications ...` work on **your organisation's own** data. `market search` does not return your own assignments; `market get <id>` does (and counts as an export).
 
 ## Safety rules
+- Brainville's terms allow automated tools and AI agents only through the organisation's own authorised API access. Do not scrape the website, share keys, or work around licence limits or quotas. Marketplace data is for internal use only (see `docs/terms-review.md`).
 - Reads are free within the user's authorised scope. Start with `list`/`get`.
 - Every change supports `--dry-run`. For any change: run `--dry-run`, show the user the result, get their explicit approval for *that action*, then run it with `--yes`. Never add `--yes` on your own initiative or as a habit.
 - Never silently publish (a publication date or `noDelay` makes an assignment visible and may cost money), `close`, `unpublish`, `delete`, `share`, change an application `status`, or `boost`.

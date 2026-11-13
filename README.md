@@ -47,5 +47,8 @@ See `docs/api-coverage.md`, `docs/sandbox-findings.md`, `docs/open-questions.md`
 
 Troubleshooting: HTTP 401 on `applications`/`market` usually means a missing licence rather than a wrong key. `--debug` logs method, path and status only.
 
+## Terms
+Use requires your company's approved Brainville API access and licences. Brainville's Terms of Use allow automated tools, including AI agents, only through authorised APIs, and marketplace data may only be used inside your own legal entity. See `docs/terms-review.md` (a summary, not legal advice).
+
 ## Security
 See `SECURITY.md`. Licence: MIT (see `LICENSE`).
