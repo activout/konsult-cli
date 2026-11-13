@@ -1,0 +1,6 @@
+.env*
+!.env.example
+*.pdf
+/konsult
+/dist/
+/downloads/
