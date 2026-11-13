@@ -183,7 +183,7 @@ paths:
   /assignment/suggestedtags:
     post:
       summary: Suggest tags (read-only)
-      x-verification-status: documented
+      x-verification-status: sandbox-verified
       requestBody: {required: true, content: {application/json: {schema: {type: object, properties: {text: {type: string}}}}}}
       responses: {'200': {description: Array of strings, content: {application/json: {schema: {type: array, items: {type: string}}}}}, default: {$ref: '#/components/responses/Error'}}
   /application:

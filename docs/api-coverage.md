@@ -14,7 +14,7 @@ Sandbox base: `https://apisandbox.brainville.com/v2`. (`sandbox.brainville.com` 
 | POST | /assignment/unpublish?id= | `assignments unpublish` | **sandbox-verified** (id in query) |
 | POST | /assignment/close | `assignments close` | **sandbox-verified** (id in query; no applications, so emails untested) |
 | POST/GET/DELETE | /assignmentfile | `assignments files add/get/delete` | **sandbox-verified** (POST returns 201; DELETE accepts a JSON body) |
-| POST | /assignment/suggestedtags | `assignments tags suggest` | documented, not tested |
+| POST | /assignment/suggestedtags | `assignments tags suggest` | **sandbox-verified** (returns a string array, e.g. `["Java","Spring"]`) |
 | GET | /application | `applications list/get` | **blocked**: 401 with the sandbox keys (licence/role presumed) |
 | PUT | /application | `applications status` | documented; blocked |
 | GET | /application/resume, /application/file | `applications resume`, `files get` | documented; blocked |
