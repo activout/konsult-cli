@@ -68,7 +68,7 @@ func authCmd() *cobra.Command {
 		Short: "Store the user and sender keys in the OS keychain for --env",
 		Long: "Prompts for the keys without echo, or reads two lines from stdin (user key, then sender key) when piped.\n" +
 			"Keys are never accepted as arguments, so they stay out of shell history and process lists.\n" +
-			"  printf '%s\\n%s\\n' \"$USER_KEY\" \"$SENDER_KEY\" | konsult auth login --env sandbox",
+			"  printf '%s\\n%s\\n' \"$USER_KEY\" \"$SENDER_KEY\" | konsult auth login",
 		Args: cobra.NoArgs,
 		RunE: func(*cobra.Command, []string) error {
 			u, err := readSecret("User key: ")

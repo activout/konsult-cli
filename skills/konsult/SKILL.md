@@ -33,7 +33,7 @@ If credentials are missing, tell the user to run `konsult auth login` themselves
 - `assignments close` unpublishes, **rejects all pending applications and emails the applicants**. Explain that first.
 - `consultants boost` is **paid** (in the sandbox, boosting on currently fails with HTTP 404; the cause is unresolved). Only with the user's specific approval of the charge, then `--accept-charge`.
 - Applications, CVs and consultant profiles are personal data: keep downloads out of the repo, don't send them to external services or LLM providers.
-- Default environment is sandbox. Use `--env production` only when the user explicitly asks.
+- Default environment is **production** (real data, real emails and charges). Use `--env sandbox` (Brainville's test environment) when the user wants to experiment, and always say which environment you are acting on.
 
 ## Common workflows
 ```sh
