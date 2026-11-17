@@ -6,7 +6,7 @@ Unofficial command-line interface for the Brainville API v2.
 A single static binary (no runtime needed) for people and AI agents: search marketplace assignments and manage your organisation's own assignments, consultants and applications. Includes an agent skill (`skills/konsult/`).
 
 ## Install
-Download the archive for your platform from GitHub Releases, check it against `checksums.txt`, and put `konsult` on your `PATH`. Or build: `go build -o konsult ./cmd/konsult`.
+Download the archive for your platform from GitHub Releases, check it against `checksums.txt`, and put `konsult` on your `PATH`. From v0.1.1 the archives carry a build provenance attestation: `gh attestation verify konsult_darwin_arm64.tar.gz --repo activout/konsult-cli`. Or build: `go build -o konsult ./cmd/konsult`.
 
 ## Credentials
 Prerequisite: Brainville API access (user key + sender key). Market needs Premium Sales, applications need Premium Buyer or the Applications API licence.
