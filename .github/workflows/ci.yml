@@ -13,3 +13,12 @@ jobs:
         with: {go-version-file: go.mod}
       - run: go vet ./...
       - run: go test ./...
+  # Dependabot PRs merge themselves once the tests above pass.
+  automerge:
+    needs: test
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions: {contents: write, pull-requests: write}
+    steps:
+      - env: {GH_TOKEN: '${{ github.token }}', PR_URL: '${{ github.event.pull_request.html_url }}'}
+        run: gh pr merge --squash "$PR_URL"
