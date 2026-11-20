@@ -241,3 +241,18 @@ func TestIDActionsUseQueryOnly(t *testing.T) {
 		}
 	}
 }
+
+func TestApplicationStatusRate(t *testing.T) {
+	var body map[string]any
+	h := func(w http.ResponseWriter, r *http.Request) {
+		json.NewDecoder(r.Body).Decode(&body)
+		w.Write([]byte(`{}`))
+	}
+	if _, _, code := run(t, h, "applications", "status", "7", "--set", "Negotiating", "--rate", "950", "--yes"); code != 0 || body["rate"] != 950.0 {
+		t.Fatalf("code=%d body=%v", code, body)
+	}
+	body = nil
+	if run(t, h, "applications", "status", "7", "--set", "Rejected", "--yes"); body == nil || body["rate"] != nil {
+		t.Fatalf("rate sent without --rate: %v", body)
+	}
+}

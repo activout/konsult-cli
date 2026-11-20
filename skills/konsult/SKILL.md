@@ -43,6 +43,7 @@ konsult assignments list --ndjson                                      # own ass
 konsult assignments get 12345 --json
 konsult applications list --assignment 12345 --ndjson
 konsult applications resume 777 -o ./cv-777.pdf                        # refuses to overwrite without --force
+konsult applications status 777 --set Negotiating --rate 950 --dry-run  # Negotiating needs --rate (API rule)
 konsult assignments update 12345 --file change.json --dry-run          # preview, then ask the user, then rerun with --yes
 ```
 ## Updating a consultant profile

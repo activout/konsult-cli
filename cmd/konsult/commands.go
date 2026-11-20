@@ -486,15 +486,19 @@ func applicationsCmd() *cobra.Command {
 		}}
 
 	var set, reply, reason string
+	var rate float64
 	sm := &mutFlags{}
 	st := &cobra.Command{Use: "status ID --set STATUS", Short: "Change an application's status (visible to the applicant)", Args: cobra.ExactArgs(1),
-		RunE: func(_ *cobra.Command, a []string) error {
+		RunE: func(c *cobra.Command, a []string) error {
 			if !oneOf(set, appStatuses) {
 				return fail(exitUsage, "--set must be one of %s", strings.Join(appStatuses, ", "))
 			}
 			body := map[string]any{"id": idVal(a[0]), "status": set}
 			if reply != "" {
 				body["reply"] = reply
+			}
+			if c.Flags().Changed("rate") {
+				body["rate"] = rate
 			}
 			if reason != "" {
 				if !oneOf(reason, rejectReasons) {
@@ -506,6 +510,7 @@ func applicationsCmd() *cobra.Command {
 		}}
 	st.Flags().StringVar(&set, "set", "", "new status: "+strings.Join(appStatuses, ", "))
 	st.Flags().StringVar(&reply, "reply", "", "reply text")
+	st.Flags().Float64Var(&rate, "rate", 0, "rate (required by the API for Negotiating; undocumented)")
 	st.Flags().StringVar(&reason, "reject-reason", "", "reason when Rejected: "+strings.Join(rejectReasons, ", "))
 	st.MarkFlagRequired("set")
 	sm.bind(st)
