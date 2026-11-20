@@ -53,4 +53,6 @@
 | P1-13 | `PUT /application` (all on non-existent id 1, so nothing changed): body is validated before the lookup. Valid statuses give 404; an unknown one 400. **`Negotiating` (enum value 3) requires an undocumented `rate`**: 400 `[rate] must have a value if [status] = 3`; a number (`950`, `950.5`) passes, `0` counts as missing. The CLI gained `--rate`. `Withdrawn` is also accepted by PUT; the CLI does not offer it (the applicant withdraws, not the buyer). | 14 PUTs |
 | – | `GET /application/resume` and `/application/file` for a missing id: 404 `errorCode 1` "File not found". | downloads |
 
+| P1-13 | **Applications cannot be created by the receiving account.** There is no API endpoint for it (v2 only lists, changes status, downloads). In the web UI, even with company type *Förmedlare* (buyer + seller), own assignments are excluded from the marketplace search and `/Market/RequisitionSearchResult/Details/11803` gives 404, while another company's assignment (11718) opens with an "Ansök" button. A real incoming application needs a **second sandbox company**. | web UI, 2026-11-20 |
+
 Not tested on purpose: close, unpublish, share, boost, status change, publication, file operations, consultant delete.

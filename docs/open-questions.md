@@ -6,7 +6,7 @@ Resolved items are in `sandbox-findings.md` (P0-04 id placement, P0-08 downloads
 |---|---|---|
 | P1-15 | Why does `boost` on return 404 `errorCode 1` (off works)? | Likely missing payment card or boost capability. Ask Brainville; register a test card only with explicit user approval. |
 | P0-06 | Do publish, close, share or status change send email in the sandbox? | Not observable here (no applications, no subscribers). Needs a second account to receive mail. |
-| P1-13 | Application field types, real status transitions, emails on status change. | Licence works, statuses and validation mapped (see `sandbox-findings.md`). Needs a real application: a second sandbox account must apply to one of our published assignments (11803). |
+| P1-13 | Application field types, real status transitions, emails on status change. | Licence works, statuses and validation mapped (see `sandbox-findings.md`). Needs a real application: a **second sandbox company** must apply to one of our published assignments (11803); the own account cannot apply to its own assignment, even as Förmedlare. |
 | – | `GET /application?id=999999999` returns HTTP 500. | Server-side; ids above int32 give 400. Report to Brainville. |
 | P1-01..03 | `market search`: `textMatchType` casing (lowercase works), `extent` casing, `id: 0`. | `extent` and profile `id` untested. |
 | P1-04 | Does search exclude own assignments, or is indexing delayed? | Not isolated. `market get <id>` returns them. |
