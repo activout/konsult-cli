@@ -15,9 +15,9 @@ Sandbox base: `https://apisandbox.brainville.com/v2`. (`sandbox.brainville.com` 
 | POST | /assignment/close | `assignments close` | **sandbox-verified** (id in query; no applications, so emails untested) |
 | POST/GET/DELETE | /assignmentfile | `assignments files add/get/delete` | **sandbox-verified** (POST returns 201; DELETE accepts a JSON body) |
 | POST | /assignment/suggestedtags | `assignments tags suggest` | **sandbox-verified** (returns a string array, e.g. `["Java","Spring"]`) |
-| GET | /application | `applications list/get` | **blocked**: 401 with the sandbox keys (licence/role presumed) |
-| PUT | /application | `applications status` | documented; blocked |
-| GET | /application/resume, /application/file | `applications resume`, `files get` | documented; blocked |
+| GET | /application | `applications list/get` | **sandbox-verified** (licence granted 2026-11-20; filters checked, but the sandbox has no applications yet, so every list is `[]`) |
+| PUT | /application | `applications status` | **inferred**: validation probed on a non-existent id (404); `Negotiating` needs an undocumented `rate` (`--rate`) |
+| GET | /application/resume, /application/file | `applications resume`, `files get` | documented; reachable (404 `File not found` for a missing id) |
 | GET | /consultant | `consultants list/get` | **sandbox-verified** (`id` returns the full profile) |
 | POST/PUT | /consultant | `consultants create/update` | **sandbox-verified** (update is partial) |
 | DELETE | /consultant | `consultants delete` | **sandbox-verified** (id in query) |
