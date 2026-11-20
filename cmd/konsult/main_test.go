@@ -148,15 +148,6 @@ func TestDownloadForceReplacesSafely(t *testing.T) {
 	if st, _ := os.Stat(dst); st.Mode().Perm() != 0o600 {
 		t.Fatalf("mode = %v, want 0600", st.Mode().Perm())
 	}
-	// A symlink at output is replaced, its target untouched.
-	target := filepath.Join(d, "victim.txt")
-	os.WriteFile(target, []byte("keep"), 0o600)
-	link := filepath.Join(d, "link.pdf")
-	os.Symlink(target, link)
-	run(t, ok, "applications", "resume", "1", "-o", link, "--force")
-	if b, _ := os.ReadFile(target); string(b) != "keep" {
-		t.Fatalf("symlink target written: %q", b)
-	}
 	// A failed forced download keeps the original file and leaves no temp file.
 	run(t, func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(404) }, "applications", "resume", "1", "-o", dst, "--force")
 	if b, _ := os.ReadFile(dst); string(b) != "%PDF-1.7" {
@@ -164,6 +155,25 @@ func TestDownloadForceReplacesSafely(t *testing.T) {
 	}
 	if m, _ := filepath.Glob(filepath.Join(d, ".*.part")); len(m) != 0 {
 		t.Fatalf("temp files left: %v", m)
+	}
+	// A symlink at output is replaced by the download, its target untouched.
+	target := filepath.Join(d, "victim.txt")
+	os.WriteFile(target, []byte("keep"), 0o600)
+	link := filepath.Join(d, "link.pdf")
+	if err := os.Symlink(target, link); err != nil {
+		t.Skipf("symlinks unavailable: %v", err)
+	}
+	if _, _, code := run(t, ok, "applications", "resume", "1", "-o", link, "--force"); code != 0 {
+		t.Fatalf("forced download over symlink failed: %d", code)
+	}
+	if b, _ := os.ReadFile(target); string(b) != "keep" {
+		t.Fatalf("symlink target written: %q", b)
+	}
+	if st, err := os.Lstat(link); err != nil || st.Mode()&os.ModeSymlink != 0 {
+		t.Fatalf("output still a symlink (err=%v)", err)
+	}
+	if b, _ := os.ReadFile(link); string(b) != "%PDF-1.7" {
+		t.Fatalf("output content = %q", b)
 	}
 }
 
