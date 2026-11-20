@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -223,7 +224,7 @@ func readJSONFile(path string) (map[string]any, error) {
 	return m, nil
 }
 
-// download streams a binary response to a file (created exclusively, 0600) or stdout ("-").
+// download streams a binary response to a new 0600 file (replacing output only with force) or stdout ("-").
 func download(path string, q url.Values, output string, force bool) error {
 	if output == "" {
 		return fail(exitUsage, "--output is required (use - for stdout)")
@@ -235,11 +236,14 @@ func download(path string, q url.Values, output string, force bool) error {
 	var w io.Writer = out
 	var fh *os.File
 	if output != "-" {
-		flags := os.O_WRONLY | os.O_CREATE | os.O_EXCL
 		if force {
-			flags = os.O_WRONLY | os.O_CREATE | os.O_TRUNC
+			// New 0600 temp file renamed over output: never follows a symlink at output,
+			// never inherits its mode, and leaves the original intact on failure.
+			fh, err = os.CreateTemp(filepath.Dir(output), "."+filepath.Base(output)+".*.part")
+		} else {
+			fh, err = os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
 		}
-		if fh, err = os.OpenFile(output, flags, 0o600); err != nil {
+		if err != nil {
 			if errors.Is(err, os.ErrExist) {
 				return fail(exitUsage, "%s exists; use --force to overwrite", output)
 			}
@@ -251,16 +255,21 @@ func download(path string, q url.Values, output string, force bool) error {
 	if err != nil {
 		if fh != nil {
 			fh.Close()
-			os.Remove(output)
+			os.Remove(fh.Name())
 		}
 		return err
 	}
 	defer resp.Body.Close()
 	n, err := io.Copy(w, resp.Body)
 	if fh != nil {
-		fh.Close()
+		if cerr := fh.Close(); err == nil {
+			err = cerr
+		}
+		if err == nil && force {
+			err = os.Rename(fh.Name(), output)
+		}
 		if err != nil {
-			os.Remove(output)
+			os.Remove(fh.Name())
 		} else {
 			fmt.Fprintf(errOut, "saved %d bytes to %s (may contain personal data)\n", n, output)
 		}
