@@ -135,6 +135,38 @@ func TestDownloadNoOverwriteAndNoPartialOnError(t *testing.T) {
 	}
 }
 
+func TestDownloadForceReplacesSafely(t *testing.T) {
+	ok := func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("%PDF-1.7")) }
+	d := t.TempDir()
+	// Permissive existing file ends up 0600 with the new content.
+	dst := filepath.Join(d, "cv.pdf")
+	os.WriteFile(dst, []byte("old"), 0o644)
+	os.Chmod(dst, 0o644)
+	if _, _, code := run(t, ok, "applications", "resume", "1", "-o", dst, "--force"); code != 0 {
+		t.Fatalf("forced download failed: %d", code)
+	}
+	if st, _ := os.Stat(dst); st.Mode().Perm() != 0o600 {
+		t.Fatalf("mode = %v, want 0600", st.Mode().Perm())
+	}
+	// A symlink at output is replaced, its target untouched.
+	target := filepath.Join(d, "victim.txt")
+	os.WriteFile(target, []byte("keep"), 0o600)
+	link := filepath.Join(d, "link.pdf")
+	os.Symlink(target, link)
+	run(t, ok, "applications", "resume", "1", "-o", link, "--force")
+	if b, _ := os.ReadFile(target); string(b) != "keep" {
+		t.Fatalf("symlink target written: %q", b)
+	}
+	// A failed forced download keeps the original file and leaves no temp file.
+	run(t, func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(404) }, "applications", "resume", "1", "-o", dst, "--force")
+	if b, _ := os.ReadFile(dst); string(b) != "%PDF-1.7" {
+		t.Fatalf("original lost on failure: %q", b)
+	}
+	if m, _ := filepath.Glob(filepath.Join(d, ".*.part")); len(m) != 0 {
+		t.Fatalf("temp files left: %v", m)
+	}
+}
+
 func TestKeychainRoundTripAndEnvPrecedence(t *testing.T) {
 	keyring.MockInit()
 	t.Setenv("KONSULT_USER_KEY", "")
