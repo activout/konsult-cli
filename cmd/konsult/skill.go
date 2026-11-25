@@ -15,12 +15,14 @@ import (
 )
 
 // skillAgents maps an agent to the config dir that shows it is installed and its user skills dir (both under $HOME).
+// Codex, Copilot, Cursor and Gemini CLI all read the shared ~/.agents/skills, so one copy serves them all;
+// installing into their own dirs as well would make them load the skill twice.
 var skillAgents = []struct{ name, detect, dir string }{
 	{"claude", ".claude", ".claude/skills"},
 	{"codex", ".codex", ".agents/skills"},
-	{"copilot", ".copilot", ".copilot/skills"},
-	{"cursor", ".cursor", ".cursor/skills"},
-	{"gemini", ".gemini", ".gemini/skills"},
+	{"copilot", ".copilot", ".agents/skills"},
+	{"cursor", ".cursor", ".agents/skills"},
+	{"gemini", ".gemini", ".agents/skills"},
 }
 
 func skillCmd() *cobra.Command {
