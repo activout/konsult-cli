@@ -84,7 +84,7 @@ func newRoot() *cobra.Command {
 
 	root.AddCommand(
 		&cobra.Command{Use: "version", Short: "Print version", Run: func(c *cobra.Command, _ []string) { fmt.Fprintln(out, "konsult", version) }},
-		authCmd(), configCmd(), marketCmd(), assignmentsCmd(), consultantsCmd(), applicationsCmd(), apiCmd(),
+		authCmd(), configCmd(), marketCmd(), assignmentsCmd(), consultantsCmd(), applicationsCmd(), apiCmd(), skillCmd(),
 	)
 	return root
 }
