@@ -91,7 +91,21 @@ components:
       properties:
         id: {type: integer}
         assignmentId: {type: integer}
-        status: {type: string, description: "Pending Accepted Rejected Negotiating Approved RequestAdditions (documented)"}
+        assignmentTitle: {type: string}
+        sentDate: {type: string}
+        rate: {type: number}
+        suggestedRate: {type: number}
+        rateType: {type: string}
+        rateCurrency: {type: string}
+        status: {type: string, description: "Pending Accepted Rejected Negotiating Approved RequestAdditions (documented); Withdrawn also accepted as a filter (sandbox)"}
+        extent: {type: object, properties: {value: {type: number}, type: {type: string}}}
+        resourceId: {type: integer}
+        resourceName: {type: string}
+        availabilityDate: {type: string}
+        rejectReason: {type: string}
+        files: {type: array, items: {type: string}}
+        companyId: {type: integer}
+        company: {type: string}
     Any:
       type: object
       additionalProperties: true
@@ -188,8 +202,8 @@ paths:
       responses: {'200': {description: Array of strings, content: {application/json: {schema: {type: array, items: {type: string}}}}}, default: {$ref: '#/components/responses/Error'}}
   /application:
     get:
-      summary: List or get applications (401 in the sandbox, licence or role)
-      x-verification-status: blocked
+      summary: List or get applications (200 in the sandbox; no applications exist there yet, fields from the docs). Missing id gives 404 with an empty body.
+      x-verification-status: sandbox-verified
       parameters:
         - {name: id, in: query, schema: {type: string}}
         - {name: assignmentId, in: query, schema: {type: string}}
@@ -201,8 +215,8 @@ paths:
         '200': {description: OK, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/Application'}}}}}
         default: {$ref: '#/components/responses/Error'}
     put:
-      summary: Change application status
-      x-verification-status: blocked
+      summary: Change application status. Negotiating requires rate (undocumented; 400 otherwise). Probed on a missing id only.
+      x-verification-status: inferred
       requestBody:
         required: true
         content:
@@ -214,18 +228,19 @@ paths:
                 id: {type: integer}
                 status: {type: string}
                 reply: {type: string}
+                rate: {type: number, description: "required when status is Negotiating (sandbox, undocumented)"}
                 rejectReason: {type: string}
       responses: {'200': {$ref: '#/components/responses/Ok'}, default: {$ref: '#/components/responses/Error'}}
   /application/resume:
     get:
       summary: Download the CV (PDF)
-      x-verification-status: blocked
+      x-verification-status: documented
       parameters: [{name: id, in: query, required: true, schema: {type: string}}]
       responses: {'200': {description: PDF, content: {application/pdf: {schema: {type: string, format: binary}}}}, default: {$ref: '#/components/responses/Error'}}
   /application/file:
     get:
       summary: Download an application attachment
-      x-verification-status: blocked
+      x-verification-status: documented
       parameters:
         - {name: id, in: query, required: true, schema: {type: string}}
         - {name: fileindex, in: query, schema: {type: integer}}

@@ -46,4 +46,13 @@
 
 | P1-09 | **Delete of a previously published assignment is a silent no-op**: after `unpublish` (11801, 11803) or `close` (11802), `DELETE /assignment/delete` returned **200 but the assignment still exists** (`get` and `list --include-closed` still return it). Never-published drafts are really deleted (verified several times). So a 200 from delete does not prove deletion: read back. Published seeds therefore remain in the sandbox. | 3 deletes |
 
+| P0-03/P1-13 | **Applications licence now active (2026-11-20)**: `GET /application` returns 200 (was 401). The sandbox account has **no applications** (`[]` overall and for 11801-11803), so the record shape is still only documented. | list, get |
+| P1-13 | `status` filter (GET) accepts, case-insensitively, `Pending`, `Accepted`, `Rejected`, `Negotiating`, `Approved`, `RequestAdditions` and the undocumented **`Withdrawn`**; anything else gives 400 `[status] has an invalid value`. Integers (even `99`, `-1`) and `Pending,Rejected` are accepted too: looks like a C# `Enum.TryParse`, so they are not proof of extra statuses. | ~80 filter values |
+| – | `startDate`/`endDate` accept `2026-01-01`, `2026-01-01T00:00:00` and `01/01/2026`; `20260101`, `2026-13-01` and text give 400. Non-numeric `id`/`assignmentId` give 400 `invalid value`. | filter probes |
+| – | `GET /application?id=` for a missing id: **404 with an empty body**. `id=999999999` gives **500**; `id=2147483648` gives 400 (int32). | gets |
+| P1-13 | `PUT /application` (all on non-existent id 1, so nothing changed): body is validated before the lookup. Valid statuses give 404; an unknown one 400. **`Negotiating` (enum value 3) requires an undocumented `rate`**: 400 `[rate] must have a value if [status] = 3`; a number (`950`, `950.5`) passes, `0` counts as missing. The CLI gained `--rate`. `Withdrawn` is also accepted by PUT; the CLI does not offer it (the applicant withdraws, not the buyer). | 14 PUTs |
+| – | `GET /application/resume` and `/application/file` for a missing id: 404 `errorCode 1` "File not found". | downloads |
+
+| P1-13 | **Applications cannot be created by the receiving account.** There is no API endpoint for it (v2 only lists, changes status, downloads). In the web UI, even with company type *Förmedlare* (buyer + seller), own assignments are excluded from the marketplace search and `/Market/RequisitionSearchResult/Details/11803` gives 404, while another company's assignment (11718) opens with an "Ansök" button. A real incoming application needs a **second sandbox company**. | web UI, 2026-11-20 |
+
 Not tested on purpose: close, unpublish, share, boost, status change, publication, file operations, consultant delete.
