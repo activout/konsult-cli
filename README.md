@@ -40,7 +40,7 @@ Safety: every change has `--dry-run` (redacted payload), asks for confirmation, 
 Exit codes: 0 ok, 1 general, 2 usage, 3 auth/licence, 4 not found, 5 invalid input, 6 rate limited, 7 server error, 8 not confirmed.
 
 ## Agent skill
-Copy or symlink `skills/konsult` into your agent's skills directory (for Claude Code: `~/.claude/skills/konsult`). It contains no secrets.
+The skill is built into the binary. `konsult skill install` writes it to `<skills dir>/konsult` for each agent it finds in your home directory: Claude Code (`~/.claude/skills`), and Codex, GitHub Copilot, Cursor and Gemini CLI (`~/.agents/skills`, which all four read). Pick agents with `--agent claude,codex` or a directory with `--dir`. Run it again after you upgrade konsult. An install you have changed, or one that is a symlink, is replaced only with `--force`. You can also copy or symlink `skills/konsult` by hand. It contains no secrets.
 
 ## Limits and status
 See `docs/api-coverage.md`, `docs/sandbox-findings.md`, `docs/open-questions.md` and `openapi/unofficial-v2.yaml` (community-authored, evidence-tagged). Sandbox-verified: consultants, assignments, files, market search/get, unpublish/close/delete/share. Not verified: applications (licence), `boost` on (404 in the sandbox), and whether emails are sent. Not covered: webhooks, v1, XML. The `macOS` keychain backend runs `/usr/bin/security`.

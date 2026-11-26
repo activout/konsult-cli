@@ -241,3 +241,41 @@ func TestIDActionsUseQueryOnly(t *testing.T) {
 		}
 	}
 }
+
+func TestSkillInstall(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	os.Mkdir(filepath.Join(home, ".claude"), 0o755)
+	skill := filepath.Join(home, ".claude", "skills", "konsult", "SKILL.md")
+	if _, e, code := run(t, nil, "skill", "install"); code != 0 || !strings.Contains(e, "installed") {
+		t.Fatalf("install: code=%d err=%q", code, e)
+	}
+	if _, err := os.Stat(skill); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(home, ".agents")); err == nil {
+		t.Fatal("installed for an agent that is not present")
+	}
+	if _, e, code := run(t, nil, "skill", "install"); code != 0 || !strings.Contains(e, "up to date") {
+		t.Fatalf("rerun: code=%d err=%q", code, e)
+	}
+	os.WriteFile(skill, []byte("edited"), 0o644)
+	if _, _, code := run(t, nil, "skill", "install"); code != exitUsage {
+		t.Fatalf("changed install replaced without --force: code=%d", code)
+	}
+	if _, _, code := run(t, nil, "skill", "install", "--force"); code != 0 {
+		t.Fatalf("--force: code=%d", code)
+	}
+	if b, _ := os.ReadFile(skill); !bytes.HasPrefix(b, []byte("---\nname: konsult")) {
+		t.Fatalf("not restored: %q", b)
+	}
+	if _, _, code := run(t, nil, "skill", "install", "--agent", "codex"); code != 0 {
+		t.Fatalf("--agent codex: code=%d", code)
+	}
+	if _, err := os.Stat(filepath.Join(home, ".agents", "skills", "konsult", "SKILL.md")); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, code := run(t, nil, "skill", "install", "--agent", "nope"); code != exitUsage {
+		t.Fatalf("unknown agent: code=%d", code)
+	}
+}
